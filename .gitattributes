@@ -1,0 +1,28 @@
+# Normalize line endings: LF in the repo, whatever the OS uses locally.
+* text=auto
+
+# Explicitly LF for code and docs (avoids CRLF churn on Windows)
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+*.sql   text eol=lf
+
+# Binary files (never touch)
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ico   binary
+*.wasm  binary
+*.gz    binary
+*.woff  binary
+*.woff2 binary
+*.lockb binary

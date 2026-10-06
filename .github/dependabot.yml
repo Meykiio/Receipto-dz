@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    cooldown: "5 days"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    ignore:
+      # Toolchain majors are reviewed by hand, never auto-merged: Vite 8 moves
+      # the bundler to Rolldown and Vitest 5 changes the Vite peer model. Both
+      # have broken this build before, so they get a human and a full verify run.
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown: "5 days"

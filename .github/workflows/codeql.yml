@@ -1,0 +1,60 @@
+name: CodeQL
+
+# Static analysis for security issues in the app source and CI scripts.
+#
+# Code scanning results can only be uploaded when code scanning is enabled for
+# the repository: free on public repositories, and part of GitHub Advanced
+# Security on private ones. The job is therefore skipped while this repository
+# is private, and starts running by itself the moment it is public.
+#
+# Verified: on a private repo without GHAS the analysis succeeds but the upload
+# is rejected with "Code scanning is not enabled for this repository".
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly, so new CodeQL queries keep auditing unchanged code.
+    - cron: "27 3 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (javascript-typescript)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # Skipped while the repository is private (code scanning cannot upload
+    # results there without GitHub Advanced Security). Runs once it is public.
+    if: ${{ github.event.repository.private == false }}
+
+    permissions:
+      contents: read
+      security-events: write
+      # Required for private repositories; harmless and unused when public.
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+
+      # The project is JavaScript/TypeScript, so there is nothing to compile:
+      # CodeQL extracts from the sources directly.
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"

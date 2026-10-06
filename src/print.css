@@ -1,0 +1,98 @@
+/*
+ * Print styles.
+ *
+ * The refund request is rendered inside a right-hand drawer capped at 540px, so
+ * printing the page as-is produced a narrow column with a nested scrollbar,
+ * plus the browser's default header/footer band (page title, date, URL). These
+ * rules promote the open drawer into a plain, full-width document.
+ */
+
+@media print {
+  /* Zero page margin removes the browser's own header/footer band. */
+  @page {
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Radix locks page scroll while a drawer or dialog is open, which clips the
+     printed output. */
+  body[data-scroll-locked],
+  body[style*="overflow: hidden"] {
+    overflow: visible !important;
+  }
+
+  /* When a drawer is open, the page behind it is not part of the request. */
+  body:has([role="dialog"]) #root {
+    display: none !important;
+  }
+
+  /* The dark scrim behind the open drawer. */
+  div.fixed.inset-0 {
+    display: none !important;
+  }
+
+  /* The drawer panel becomes the page. */
+  [role="dialog"] {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 16mm 14mm !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Force light, ink-friendly colours regardless of the on-screen theme. */
+  [role="dialog"] * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+
+  /* Borders carry the structure once fills are gone. */
+  [role="dialog"] table th,
+  [role="dialog"] table td {
+    border-color: #999 !important;
+  }
+
+  /* Controls are meaningless on a sheet you hand to a supplier. */
+  [role="dialog"] button,
+  [role="dialog"] [role="button"] {
+    display: none !important;
+  }
+
+  /* Full-width table, and let long item names wrap instead of scrolling. */
+  [role="dialog"] table {
+    width: 100% !important;
+    table-layout: auto;
+  }
+
+  [role="dialog"] .overflow-x-auto,
+  [role="dialog"] .overflow-y-auto {
+    overflow: visible !important;
+  }
+
+  /* Avoid splitting a row or a block across two sheets of paper. */
+  [role="dialog"] tr,
+  [role="dialog"] section,
+  [role="dialog"] h3 {
+    break-inside: avoid;
+  }
+}
